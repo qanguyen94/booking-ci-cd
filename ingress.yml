@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: booking-ingress
+spec:
+  tls:
+    - secretName: demo-booking-com
+      hosts:
+        - demo.booking.com
+  rules:
+    - host: demo.booking.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: booking-service
+                port:
+                  number: 8080
+            pathType: Prefix
+            path: /

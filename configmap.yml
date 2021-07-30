@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: booking-configmap
+data:
+    booking.room.type: "double-bed-room"
+    booking.room.name: "Very Luxury"
+    booking.room.enterCode: "123456"

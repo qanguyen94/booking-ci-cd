@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: booking-backend
+  template:
+    metadata:
+      labels:
+        name: booking-backend
+    spec:
+      containers:
+        - name: booking-backend
+          image: qanguyen/booking:v2.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+#          env:
+#            - name: SPRING_CONFIG_LOCATION
+#              value: /opt/config/
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: postgres
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: booking-postgres-secret
+                  key: postgres.booking.db_name
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: booking-postgres-secret
+                  key: postgres.booking.db_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booking-postgres-secret
+                  key: postgres.booking.db_password
+          volumeMounts:
+            - name: booking-postgres-secret
+              mountPath: /opt/config/
+              readOnly: true
+      volumes:
+        - name: booking-postgres-secret
+          secret:
+            secretName: booking-postgres-secret
