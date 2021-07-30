@@ -3,6 +3,13 @@ pipeline {
         label 'docker'
     }
     stages {
+        stage('Build project') {
+            steps {
+                script {
+                    sh "./gradlew build"
+                }
+            }
+        }
         stage('Building image') {
             steps {
                 script {
