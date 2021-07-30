@@ -1,0 +1,24 @@
+pipeline {
+    agent {
+        label 'docker'
+    }
+    stages {
+        stage('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build "qanguyen/booking:v2.0.0"
+                }
+            }
+        }
+        stage('Deploy our image') {
+            steps {
+                script {
+                    // Assume the Docker Hub registry by passing an empty string as the first parameter
+                    docker.withRegistry('' , 'dockerhub') {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+    }
+}
