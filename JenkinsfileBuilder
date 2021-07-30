@@ -6,6 +6,7 @@ pipeline {
         stage('Build project') {
             steps {
                 script {
+                    sh "echo 'Start building resource'"
                     sh "./gradlew build"
                 }
             }
