@@ -18,9 +18,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-#          env:
-#            - name: SPRING_CONFIG_LOCATION
-#              value: /opt/config/
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
@@ -47,3 +44,51 @@ spec:
         - name: booking-postgres-secret
           secret:
             secretName: booking-postgres-secret
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: booking-postgres
+  template:
+    metadata:
+      labels:
+        name: booking-postgres
+    spec:
+      containers:
+        - name: booking-postgres
+          image: postgres:12.7
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+              name: postgresql
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: booking-postgres-secret
+                  key: postgres.booking.db_username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booking-postgres-secret
+                  key: postgres.booking.db_password
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: booking-postgres-secret
+                  key: postgres.booking.db_name
+          volumeMounts:
+            - name: booking-postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: booking-postgres-storage
+          persistentVolumeClaim:
+            claimName: booking-pvc
