@@ -11,20 +11,27 @@ pipeline {
                 }
             }
         }
-        stage('Building image') {
+        stage('Build docker image') {
             steps {
                 script {
                     dockerImage = docker.build "qanguyen/booking:v2.0.0"
                 }
             }
         }
-        stage('Deploy our image') {
+        stage('Push image') {
             steps {
                 script {
                     // Assume the Docker Hub registry by passing an empty string as the first parameter
                     docker.withRegistry('' , 'dockerhub') {
                         dockerImage.push()
                     }
+                }
+            }
+        }
+        stage('Deploy kubernetes') {
+            steps {
+                script {
+                    sh "kubectl apply -f kubernetes"
                 }
             }
         }
