@@ -18,9 +18,9 @@ public class RoomInfoController {
 
     private final IRoomInfoService roomInfoService;
 
-    @PostMapping("/{roomId}")
+    @GetMapping("/{roomId}")
     public String getRoomInfo(@PathVariable String roomId) {
-        return roomId;
+        return String.format("Room with id {%s} is not available.", roomId);
     }
 
     @GetMapping("/all")
