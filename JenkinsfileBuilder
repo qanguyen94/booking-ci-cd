@@ -31,6 +31,7 @@ pipeline {
         stage('Deploy kubernetes') {
             steps {
                 script {
+                    sh "kubectl delete deployment booking-deployment"
                     sh "kubectl apply -f kubernetes"
                 }
             }
