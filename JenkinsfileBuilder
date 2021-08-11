@@ -1,5 +1,5 @@
 podTemplate {
-      node('kubepods') {
+      node(POD_LABEL) {
               stage('Build project') {
                       script {
                           sh "echo 'Start building resource'"
