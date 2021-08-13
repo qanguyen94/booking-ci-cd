@@ -17,7 +17,7 @@ public class RoomInfoService implements IRoomInfoService {
 
     @Override
     public List<RoomInfo> findAll() {
-        var roomInfo = (List<RoomInfo>) repository.findAll();
+        List<RoomInfo> roomInfo = (List<RoomInfo>) repository.findAll();
         return roomInfo;
     }
 }

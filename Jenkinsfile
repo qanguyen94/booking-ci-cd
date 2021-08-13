@@ -1,45 +1,50 @@
 pipeline {
     agent {
         kubernetes {
-            yaml '''
-              apiVersion: v1
-              kind: Pod
-              metadata:
-                labels:
-                  some-label: some-label-value
-              spec:
-                containers:
-                - name: gradle
-                  image: gradle:jre11
-              '''
+            podRetention onFailure()
         }
     }
 
     stages {
-        stage('Build project') {
+        stage('Checkout project') {
             steps {
-                sh "echo 'Start building resource'"
-                sh "./gradlew build"
+                script {
+                   git branch: 'main',
+                       url: 'https://github.com/qanguyen94/booking-ci-cd.git'
+                }
             }
         }
-         stage('Build docker image') {
-                 steps {
-                     dockerImage = docker.build "qanguyen/booking:v2.0.0"
-                 }
-         }
-         stage('Push image') {
-                 steps {
-                     // Assume the Docker Hub registry by passing an empty string as the first parameter
-                     docker.withRegistry('' , 'dockerhub') {
-                         dockerImage.push()
-                     }
-                 }
-         }
-         stage('Deploy kubernetes') {
-                 steps {
-                     kubernetesDeploy(configs: "kubernetes", kubeconfigId: "")
-                 }
-         }
-
+        stage('Build project') {
+            steps {
+                script {
+                    sh "echo 'Start building resource'"
+                    sh "./gradlew build"
+                }
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                script {
+                    dockerImage = docker.build "qanguyen/booking:v2.0.0"
+                }
+            }
+        }
+        stage('Push image') {
+            steps {
+                script {
+                    // Assume the Docker Hub registry by passing an empty string as the first parameter
+                    docker.withRegistry('' , 'dockerhub') {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+        stage('Deploy kubernetes') {
+            steps {
+                script {
+                    kubernetesDeploy(configs: "kubernetes", kubeconfigId: "")
+                }
+            }
+        }
     }
 }
