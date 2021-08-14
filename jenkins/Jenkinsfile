@@ -46,7 +46,7 @@ pipeline {
         stage('Deploy kubernetes') {
             steps {
                 script {
-                    kubernetesDeploy(configs: "kubernetes", kubeconfigId: "")
+                    kubernetesDeploy(kubeconfigId: "kube-config-for-jenkins", configs: "kubernetes")
                 }
             }
         }
