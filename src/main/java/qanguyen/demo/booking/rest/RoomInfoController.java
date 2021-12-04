@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("room")
+@RequestMapping("api/room")
 public class RoomInfoController {
 
     private final IRoomInfoService roomInfoService;
