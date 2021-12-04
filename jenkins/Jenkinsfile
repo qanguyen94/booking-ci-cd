@@ -1,0 +1,57 @@
+pipeline {
+    agent {
+        kubernetes {
+            yamlFile 'jenkins/jenkins-agents.yml'
+        }
+    }
+
+    stages {
+        stage('Checkout project') {
+            steps {
+                script {
+                   git branch: 'main',
+                       url: 'https://github.com/qanguyen94/booking-ci-cd.git'
+                }
+            }
+        }
+        stage('Build project') {
+            steps {
+                script {
+                    sh "echo 'Start building backend'"
+                    sh "cd backend && ./gradlew build"
+                }
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                container('docker') {
+                    script {
+                        dockerImage1 = docker.build "qanguyen/booking-backend:v1.0.0"
+                        sh "cd frontend"
+                        dockerImage2 = docker.build "qanguyen/booking-frontend:v1.0.0"
+                    }
+                }
+            }
+        }
+        stage('Push image') {
+            steps {
+                container('docker') {
+                    script {
+                        // Assume the Docker Hub registry by passing an empty string as the first parameter
+                        docker.withRegistry('' , 'dockerhub') {
+                            dockerImage1.push()
+                            dockerImage2.push()
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy kubernetes') {
+            steps {
+                script {
+                    kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes/deployment.yml")
+                }
+            }
+        }
+    }
+}
