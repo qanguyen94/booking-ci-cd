@@ -26,6 +26,7 @@ pipeline {
             steps {
                 container('docker') {
                     script {
+                        sh "cd backend"
                         dockerImage1 = docker.build "qanguyen/booking-backend:v1.0.0"
                         sh "cd frontend"
                         dockerImage2 = docker.build "qanguyen/booking-frontend:v1.0.0"
