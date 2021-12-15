@@ -26,8 +26,8 @@ pipeline {
             steps {
                 container('docker') {
                     script {
-                        backendImage = docker.build("qanguyen/booking-backend:v1.0.0", "-f backend/Dockerfile")
-                        frontendImage = docker.build("qanguyen/booking-frontend:v1.0.0", "-f frontend/Dockerfile")
+                        backendImage = docker.build("qanguyen/booking-backend:v1.0.0", "-f backend/Dockerfile .")
+                        frontendImage = docker.build("qanguyen/booking-frontend:v1.0.0", "-f frontend/Dockerfile .")
                     }
                 }
             }
