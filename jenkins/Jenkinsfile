@@ -29,10 +29,9 @@ pipeline {
             steps {
                 container('docker') {
                     script {
-                        def commitId = sh returnStdout: true, script: 'git rev-parse --short HEAD'
-                        env.K8S_NAMESPACE = commitId
-                        backendImage = docker.build("qanguyen/booking-backend:$commitId", "-f backend/Dockerfile ./backend")
-                        frontendImage = docker.build("qanguyen/booking-frontend:$commitId", "-f frontend/Dockerfile ./frontend")
+                        env.K8S_NAMESPACE = env.GIT_COMMIT
+                        backendImage = docker.build("qanguyen/booking-backend:$env.GIT_COMMIT", "-f backend/Dockerfile ./backend")
+                        frontendImage = docker.build("qanguyen/booking-frontend:$env.GIT_COMMIT", "-f frontend/Dockerfile ./frontend")
                     }
                 }
             }
