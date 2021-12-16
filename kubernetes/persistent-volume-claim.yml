@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: booking-pvc
+  namespace: ${K8S_NAMESPACE}
   labels:
     name: booking-pvc
 spec:

@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: booking-configmap
+  namespace: ${K8S_NAMESPACE}
 data:
     booking.room.type: "double-bed-room"
     booking.room.name: "Luxury"
@@ -11,6 +12,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: booking-configmap-file
+  namespace: ${K8S_NAMESPACE}
 data:
   application.properties: |
     booking.room.type="twin-bed-room"

@@ -5,12 +5,15 @@ pipeline {
         }
     }
 
+    environment {
+        K8S_NAMESPACE = 'unknown'
+    }
+
     stages {
         stage('Checkout project') {
             steps {
                 script {
-                   git branch: 'main',
-                       url: 'https://github.com/qanguyen94/booking-ci-cd.git'
+                   git branch: 'main', url: 'https://github.com/qanguyen94/booking-ci-cd.git'
                 }
             }
         }
@@ -26,8 +29,10 @@ pipeline {
             steps {
                 container('docker') {
                     script {
-                        backendImage = docker.build("qanguyen/booking-backend:v1.0.0", "-f backend/Dockerfile ./backend")
-                        frontendImage = docker.build("qanguyen/booking-frontend:v1.0.0", "-f frontend/Dockerfile ./frontend")
+                        def commitId = sh returnStdout: true, script: 'git rev-parse --short HEAD'
+                        env.K8S_NAMESPACE = commitId
+                        backendImage = docker.build("qanguyen/booking-backend:$commitId", "-f backend/Dockerfile ./backend")
+                        frontendImage = docker.build("qanguyen/booking-frontend:$commitId", "-f frontend/Dockerfile ./frontend")
                     }
                 }
             }
@@ -48,7 +53,11 @@ pipeline {
         stage('Deploy kubernetes') {
             steps {
                 script {
-                    kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes/deployment.yml")
+                    withKubeConfig([credentialsId: 'kube-config']) {
+                        sh 'kubectl delete ns deployment-booking'
+                    }
+                    kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes/namespace.yml")
+                    kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes")
                 }
             }
         }
