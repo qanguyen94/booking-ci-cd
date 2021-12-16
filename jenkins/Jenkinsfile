@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes/namespace.yml")
-                    kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes")
+                    kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes/*.yml")
                 }
             }
         }
