@@ -52,9 +52,6 @@ pipeline {
         stage('Deploy kubernetes') {
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'kube-config']) {
-                        sh 'kubectl delete ns deployment-booking'
-                    }
                     kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes/namespace.yml")
                     kubernetesDeploy(kubeconfigId: "kube-config", configs: "kubernetes")
                 }
