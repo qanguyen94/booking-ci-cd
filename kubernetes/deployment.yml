@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: booking-backend
-          image: qanguyen/booking-backend:1.0.0
+          image: "qanguyen/booking-backend:${GIT_COMMIT}"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -42,7 +42,7 @@ spec:
               mountPath: /opt/config/
               readOnly: true
         - name: booking-frontend
-          image: qanguyen/booking-frontend:1.0.0
+          image: "qanguyen/booking-frontend:${GIT_COMMIT}"
           imagePullPolicy: Always
           ports:
             - containerPort: 80

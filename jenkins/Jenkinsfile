@@ -29,7 +29,7 @@ pipeline {
             steps {
                 container('docker') {
                     script {
-                        env.K8S_NAMESPACE = env.GIT_COMMIT
+                        env.K8S_NAMESPACE = "booking-${env.GIT_COMMIT}"
                         backendImage = docker.build("qanguyen/booking-backend:$env.GIT_COMMIT", "-f backend/Dockerfile ./backend")
                         frontendImage = docker.build("qanguyen/booking-frontend:$env.GIT_COMMIT", "-f frontend/Dockerfile ./frontend")
                     }
